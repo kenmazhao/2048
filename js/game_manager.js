@@ -72,7 +72,23 @@ GameManager.prototype.addStartTiles = function () {
 // Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
-    var value = Math.random() < 0.9 ? 2 : 4;
+
+    if(this.grid.countTwo() - this.grid.countOne() >=3){
+      console.log("1");
+      var value = 1;
+    } else if (this.grid.countOne() - this.grid.countTwo() >=3){
+      console.log("2");
+      var value = 2;
+    } else {
+      console.log("random");
+    var random = Math.random()
+    var value = random > 0.99375 ? 24 
+              : random > 0.9875 ? 12 
+              : random > 0.975 ? 6
+              : random > 0.8 ? 3 
+              : random > 0.4 ? 2
+              : 1;
+    }
     var tile = new Tile(this.grid.randomAvailableCell(), value);
 
     this.grid.insertTile(tile);
@@ -157,8 +173,11 @@ GameManager.prototype.move = function (direction) {
         var next      = self.grid.cellContent(positions.next);
 
         // Only one merger per row traversal?
-        if (next && next.value === tile.value && !next.mergedFrom) {
-          var merged = new Tile(positions.next, tile.value * 2);
+        if (next && ((tile.value >=3 && next.value === tile.value) || (next.value + tile.value === 3)) && !next.mergedFrom){
+          if(tile.value >=3)
+            var merged = new Tile(positions.next, tile.value * 2);
+          else
+            var merged = new Tile(positions.next, 3);
           merged.mergedFrom = [tile, next];
 
           self.grid.insertTile(merged);
@@ -260,7 +279,8 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
           var other  = self.grid.cellContent(cell);
 
-          if (other && other.value === tile.value) {
+          if (other && ((tile.value >=3 && other.value === tile.value) || (other.value + tile.value === 3))){
+//          if (other && other.value === tile.value) {
             return true; // These two tiles can be merged
           }
         }
