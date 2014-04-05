@@ -96,7 +96,7 @@ Grid.prototype.removeTile = function (tile) {
 
 Grid.prototype.withinBounds = function (position) {
   return position.x >= 0 && position.x < this.size &&
-         position.y >= 0 && position.y < this.size;
+  position.y >= 0 && position.y < this.size;
 };
 
 Grid.prototype.countOne = function () {
@@ -111,16 +111,28 @@ Grid.prototype.countOne = function () {
   return count;
 };
 
-Grid.prototype.countTwo = function (position) {
+Grid.prototype.countThree = function (position) {
   var count = 0;
   for (var x = 0; x < this.size; x++) {
     for (var y = 0; y < this.size; y++) {
       tile = this.cellContent({ x: x, y: y });
-      if(tile && tile.value === 2)
+      if(tile && tile.value === 3)
         count = count + 1;
     }
   }
   return count;
+};
+
+Grid.prototype.highestValue = function (position) {
+  var highest = 0;
+  for (var x = 0; x < this.size; x++) {
+    for (var y = 0; y < this.size; y++) {
+      tile = this.cellContent({ x: x, y: y });
+      if(tile && tile.value > highest)
+        highest = tile.value;
+    }
+  }
+  return highest;
 };
 
 Grid.prototype.serialize = function () {
